@@ -1,12 +1,15 @@
-   require('dotenv').config();
-   const express = require('express');
-   const app = express();
+require('dotenv').config();
+const express = require('express');
+const connectDB = require('./config/db');
 
-   app.use(express.json());
+connectDB(); // connect to MongoDB when the server starts
 
-   app.get('/api/health', (req, res) => {
-     res.json({ success: true, message: 'API is running' });
-   });
+const app = express();
+app.use(express.json());
 
-   const PORT = process.env.PORT || 5000;
-   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.get('/api/health', (req, res) => {
+  res.json({ success: true, message: 'API is running' });
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
