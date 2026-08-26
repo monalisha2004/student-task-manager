@@ -1,23 +1,38 @@
 import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/useAuth';
 
 export default function Register() {
+  const { register } = useAuth();
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     fullName: '', email: '', collegeName: '', password: '', confirmPassword: ''
   });
+  const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
-    e.preventDefault(); // stops the page from reloading on submit
-    console.log('Form submitted:', form); // we'll replace this with a real API call on Day 5
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSubmitting(true);
+    try {
+      await register(form);
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Registration failed.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
     <div style={{ maxWidth: 420, margin: '60px auto', padding: '0 20px' }}>
       <div className="card">
         <h2 style={{ marginTop: 0 }}>Create your account</h2>
+        {error && <p style={{ color: 'var(--color-danger)' }}>{error}</p>}
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: 14 }}>
             <label>Full name</label><br />
@@ -44,10 +59,13 @@ export default function Register() {
             <input name="confirmPassword" type="password" value={form.confirmPassword} onChange={handleChange}
               style={{ width: '100%', padding: 10, marginTop: 4 }} />
           </div>
-          <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>
-            Create account
+          <button type="submit" className="btn btn-primary" style={{ width: '100%' }} disabled={submitting}>
+            {submitting ? 'Creating account…' : 'Create account'}
           </button>
         </form>
+        <p style={{ textAlign: 'center', marginTop: 16 }}>
+          Already have an account? <Link to="/login">Log in</Link>
+        </p>
       </div>
     </div>
   );
