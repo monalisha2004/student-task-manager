@@ -20,11 +20,14 @@ export default function Navbar() {
         </Link>
         <nav style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
           {user ? (
+            
             <>
               <Link to="/dashboard" style={{ color: 'var(--color-muted)', textDecoration: 'none' }}>Dashboard</Link>
               <span style={{ fontSize: 14 }}>{user.fullName}</span>
               <button onClick={handleLogout} className="btn" style={{ border: '1px solid var(--color-border)' }}>
-                Log out
+              <Link to="/tasks" style={{ color: 'var(--color-muted)', textDecoration: 'none' }}>Tasks</Link>
+<Link to="/profile" style={{ color: 'var(--color-muted)', textDecoration: 'none' }}>Profile</Link>
+  Log out
               </button>
             </>
           ) : (
