@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/useAuth';
+
 export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -10,30 +11,32 @@ export default function Navbar() {
   };
 
   return (
-    <header style={{ borderBottom: '1px solid var(--color-border)', background: 'white' }}>
-      <div style={{
-        maxWidth: 1000, margin: '0 auto', padding: '0 24px', height: 64,
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between'
-      }}>
-        <Link to="/" style={{ fontWeight: 700, fontSize: 18, textDecoration: 'none', color: 'var(--color-ink)' }}>
-          Student Task Manager
-        </Link>
-        <nav style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+    <header className="navbar">
+      <div className="navbar-inner">
+       <Link to="/" className="brand">
+  <Link to="/" className="brand">
+  <span className="brand-logo">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 11l3 3L22 4" />
+      <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+    </svg>
+  </span>
+</Link>
+  Student Task Manager
+</Link>
+        <nav className="nav-links">
           {user ? (
-            
             <>
-              <Link to="/dashboard" style={{ color: 'var(--color-muted)', textDecoration: 'none' }}>Dashboard</Link>
-              <span style={{ fontSize: 14 }}>{user.fullName}</span>
-              <button onClick={handleLogout} className="btn" style={{ border: '1px solid var(--color-border)' }}>
-              <Link to="/tasks" style={{ color: 'var(--color-muted)', textDecoration: 'none' }}>Tasks</Link>
-<Link to="/profile" style={{ color: 'var(--color-muted)', textDecoration: 'none' }}>Profile</Link>
-  Log out
-              </button>
+              <Link to="/dashboard" className="nav-link">Dashboard</Link>
+              <Link to="/tasks" className="nav-link">Tasks</Link>
+              <Link to="/profile" className="nav-link">Profile</Link>
+              <span className="nav-user-name">{user.fullName}</span>
+              <button onClick={handleLogout} className="btn btn-secondary btn-sm">Log out</button>
             </>
           ) : (
             <>
-              <Link to="/login" style={{ color: 'var(--color-muted)', textDecoration: 'none' }}>Log in</Link>
-              <Link to="/register" className="btn btn-primary" style={{ textDecoration: 'none' }}>Sign up</Link>
+              <Link to="/login" className="nav-link">Log in</Link>
+              <Link to="/register" className="btn btn-primary btn-sm">Sign up</Link>
             </>
           )}
         </nav>

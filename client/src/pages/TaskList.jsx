@@ -57,28 +57,27 @@ export default function TaskList() {
   const isOverdue = (task) => task.status !== 'Completed' && new Date(task.deadline) < new Date();
 
   return (
-    <div style={{ maxWidth: 900, margin: '40px auto', padding: '0 20px' }}>
+    <div className="page-container">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
         <h2 style={{ margin: 0 }}>My Tasks</h2>
-        <Link to="/tasks/new" className="btn btn-primary" style={{ textDecoration: 'none' }}>+ Add task</Link>
+        <Link to="/tasks/new" className="btn btn-primary">+ Add task</Link>
       </div>
 
-      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 20 }}>
-        <input placeholder="Search…" value={search} onChange={(e) => setSearch(e.target.value)}
-          style={{ padding: 8, flex: 1, minWidth: 180 }} />
-        <select value={category} onChange={(e) => setCategory(e.target.value)} style={{ padding: 8 }}>
+      <div className="toolbar">
+        <input className="form-input search-input" placeholder="Search tasks…" value={search} onChange={(e) => setSearch(e.target.value)} />
+        <select className="form-select" value={category} onChange={(e) => setCategory(e.target.value)}>
           <option value="">All categories</option>
           {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
         </select>
-        <select value={priority} onChange={(e) => setPriority(e.target.value)} style={{ padding: 8 }}>
+        <select className="form-select" value={priority} onChange={(e) => setPriority(e.target.value)}>
           <option value="">All priorities</option>
           {PRIORITIES.map((p) => <option key={p} value={p}>{p}</option>)}
         </select>
-        <select value={status} onChange={(e) => setStatus(e.target.value)} style={{ padding: 8 }}>
+        <select className="form-select" value={status} onChange={(e) => setStatus(e.target.value)}>
           <option value="">All statuses</option>
           {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
-        <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} style={{ padding: 8 }}>
+        <select className="form-select" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
           <option value="deadline">Sort by deadline</option>
           <option value="createdAt">Sort by newest</option>
         </select>
@@ -87,41 +86,26 @@ export default function TaskList() {
       {loading ? (
         <p>Loading…</p>
       ) : visibleTasks.length === 0 ? (
-        <p style={{ color: 'var(--color-muted)' }}>No tasks match your filters.</p>
+        <div className="empty-state">
+          <p>No tasks match your filters.</p>
+        </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div>
           {visibleTasks.map((task) => (
-            <div key={task._id} className="card"
-              style={{
-                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                borderLeft: isOverdue(task) ? '4px solid var(--color-danger)' : '4px solid transparent',
-              }}>
+            <div key={task._id} className={`card task-card${isOverdue(task) ? ' overdue' : ''}`}>
               <div>
-                <strong>{task.title}</strong>
-                {isOverdue(task) && (
-                  <span style={{ marginLeft: 8, fontSize: 11, background: 'var(--color-danger)', color: 'white', padding: '2px 8px', borderRadius: 10 }}>
-                    OVERDUE
-                  </span>
-                )}
-                <div style={{ fontSize: 13, color: 'var(--color-muted)', marginTop: 4 }}>
+                <span className="task-title">{task.title}</span>
+                {isOverdue(task) && <span className="badge badge-overdue">Overdue</span>}
+                <div className="task-meta">
                   {task.category} • {task.priority} • {task.status} • Due {new Date(task.deadline).toLocaleString()}
                 </div>
               </div>
-              <div style={{ display: 'flex', gap: 8 }}>
+              <div className="task-actions">
                 {task.status !== 'Completed' && (
-                  <button onClick={() => handleMarkComplete(task._id)}
-                    style={{ padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: 6, background: 'white' }}>
-                    Mark done
-                  </button>
+                  <button className="btn btn-secondary btn-sm" onClick={() => handleMarkComplete(task._id)}>Mark done</button>
                 )}
-                <button onClick={() => navigate(`/tasks/${task._id}/edit`)}
-                  style={{ padding: '6px 10px', border: '1px solid var(--color-border)', borderRadius: 6, background: 'white' }}>
-                  Edit
-                </button>
-                <button onClick={() => handleDelete(task._id)}
-                  style={{ padding: '6px 10px', border: 'none', borderRadius: 6, background: 'var(--color-danger)', color: 'white' }}>
-                  Delete
-                </button>
+                <button className="btn btn-secondary btn-sm" onClick={() => navigate(`/tasks/${task._id}/edit`)}>Edit</button>
+                <button className="btn btn-danger btn-sm" onClick={() => handleDelete(task._id)}>Delete</button>
               </div>
             </div>
           ))}

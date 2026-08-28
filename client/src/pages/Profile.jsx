@@ -8,14 +8,15 @@ export default function Profile() {
   const [form, setForm] = useState({ fullName: '', collegeName: '' });
   const [message, setMessage] = useState('');
 
+  const fetchProfile = async () => {
+    const res = await api.get('/users/me');
+    setUser(res.data.data.user);
+    setStats(res.data.data.stats);
+    setForm({ fullName: res.data.data.user.fullName, collegeName: res.data.data.user.collegeName });
+  };
+
   useEffect(() => {
-    const loadProfile = async () => {
-      const res = await api.get('/users/me');
-      setUser(res.data.data.user);
-      setStats(res.data.data.stats);
-      setForm({ fullName: res.data.data.user.fullName, collegeName: res.data.data.user.collegeName });
-    };
-    loadProfile();
+    fetchProfile();
   }, []);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
@@ -25,37 +26,37 @@ export default function Profile() {
     await api.patch('/users/me', form);
     setMessage('Profile updated.');
     setEditing(false);
-    const res = await api.get('/users/me');
-    setUser(res.data.data.user);
-    setStats(res.data.data.stats);
+    fetchProfile();
   };
 
   if (!user) return <p style={{ textAlign: 'center', marginTop: 60 }}>Loading…</p>;
 
   return (
-    <div style={{ maxWidth: 500, margin: '40px auto', padding: '0 20px' }}>
+    <div className="page-container-narrow">
       <div className="card">
-        {message && <p style={{ color: 'var(--color-success)' }}>{message}</p>}
+        {message && <div className="alert alert-success">{message}</div>}
 
         {!editing ? (
           <>
-            <h2 style={{ marginTop: 0 }}>{user.fullName}</h2>
-            <p style={{ color: 'var(--color-muted)' }}>{user.email}</p>
-            <p style={{ color: 'var(--color-muted)' }}>{user.collegeName}</p>
+            <div className="profile-header">
+              <h2 className="profile-name">{user.fullName}</h2>
+              <div className="profile-meta">{user.email}</div>
+              <div className="profile-meta">{user.collegeName}</div>
+            </div>
 
             {stats && (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, margin: '20px 0' }}>
-                <div className="card">
-                  <div style={{ fontSize: 12, color: 'var(--color-muted)' }}>Total</div>
-                  <div style={{ fontSize: 22, fontWeight: 700 }}>{stats.total}</div>
+              <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+                <div className="card stat-card">
+                  <div className="stat-label">Total</div>
+                  <div className="stat-value">{stats.total}</div>
                 </div>
-                <div className="card">
-                  <div style={{ fontSize: 12, color: 'var(--color-muted)' }}>Completed</div>
-                  <div style={{ fontSize: 22, fontWeight: 700, color: 'var(--color-success)' }}>{stats.completed}</div>
+                <div className="card stat-card">
+                  <div className="stat-label">Completed</div>
+                  <div className="stat-value stat-success">{stats.completed}</div>
                 </div>
-                <div className="card">
-                  <div style={{ fontSize: 12, color: 'var(--color-muted)' }}>Pending</div>
-                  <div style={{ fontSize: 22, fontWeight: 700 }}>{stats.pending}</div>
+                <div className="card stat-card">
+                  <div className="stat-label">Pending</div>
+                  <div className="stat-value stat-warning">{stats.pending}</div>
                 </div>
               </div>
             )}
@@ -64,22 +65,17 @@ export default function Profile() {
           </>
         ) : (
           <form onSubmit={handleSave}>
-            <div style={{ marginBottom: 14 }}>
-              <label>Full name</label><br />
-              <input name="fullName" value={form.fullName} onChange={handleChange}
-                style={{ width: '100%', padding: 10, marginTop: 4 }} />
+            <div className="form-group">
+              <label className="form-label">Full name</label>
+              <input className="form-input" name="fullName" value={form.fullName} onChange={handleChange} />
             </div>
-            <div style={{ marginBottom: 20 }}>
-              <label>College name</label><br />
-              <input name="collegeName" value={form.collegeName} onChange={handleChange}
-                style={{ width: '100%', padding: 10, marginTop: 4 }} />
+            <div className="form-group">
+              <label className="form-label">College name</label>
+              <input className="form-input" name="collegeName" value={form.collegeName} onChange={handleChange} />
             </div>
             <div style={{ display: 'flex', gap: 10 }}>
               <button type="submit" className="btn btn-primary">Save</button>
-              <button type="button" onClick={() => setEditing(false)}
-                style={{ padding: '10px 18px', border: '1px solid var(--color-border)', borderRadius: 6, background: 'white' }}>
-                Cancel
-              </button>
+              <button type="button" className="btn btn-secondary" onClick={() => setEditing(false)}>Cancel</button>
             </div>
           </form>
         )}

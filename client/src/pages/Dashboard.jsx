@@ -18,45 +18,51 @@ export default function Dashboard() {
   const pending = tasks.filter((t) => t.status !== 'Completed').length;
   const overdue = tasks.filter((t) => t.status !== 'Completed' && new Date(t.deadline) < new Date()).length;
 
+  const isOverdue = (task) => task.status !== 'Completed' && new Date(task.deadline) < new Date();
+
   if (loading) return <p style={{ textAlign: 'center', marginTop: 60 }}>Loading…</p>;
 
   return (
-    <div style={{ maxWidth: 900, margin: '40px auto', padding: '0 20px' }}>
-      <h2>Dashboard</h2>
-      {error && <p style={{ color: 'var(--color-danger)' }}>{error}</p>}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 32 }}>
-        <div className="card">
-          <div style={{ color: 'var(--color-muted)', fontSize: 13 }}>Total tasks</div>
-          <div style={{ fontSize: 28, fontWeight: 700 }}>{total}</div>
+    <div className="page-container">
+      <h2 style={{ marginBottom: 24 }}>Dashboard</h2>
+      {error && <div className="alert alert-error">{error}</div>}
+
+      <div className="stats-grid">
+        <div className="card stat-card">
+          <div className="stat-label">Total tasks</div>
+          <div className="stat-value">{total}</div>
         </div>
-        <div className="card">
-          <div style={{ color: 'var(--color-muted)', fontSize: 13 }}>Completed</div>
-          <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--color-success)' }}>{completed}</div>
+        <div className="card stat-card">
+          <div className="stat-label">Completed</div>
+          <div className="stat-value stat-success">{completed}</div>
         </div>
-        <div className="card">
-          <div style={{ color: 'var(--color-muted)', fontSize: 13 }}>Pending</div>
-          <div style={{ fontSize: 28, fontWeight: 700 }}>{pending}</div>
+        <div className="card stat-card">
+          <div className="stat-label">Pending</div>
+          <div className="stat-value stat-warning">{pending}</div>
         </div>
-        <div className="card">
-          <div style={{ color: 'var(--color-muted)', fontSize: 13 }}>Overdue</div>
-          <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--color-danger)' }}>{overdue}</div>
+        <div className="card stat-card">
+          <div className="stat-label">Overdue</div>
+          <div className="stat-value stat-danger">{overdue}</div>
         </div>
       </div>
 
-      <h3>Your tasks</h3>
+      <h3 style={{ marginBottom: 14 }}>Your tasks</h3>
       {tasks.length === 0 ? (
-        <p style={{ color: 'var(--color-muted)' }}>No tasks yet. (We'll add a form to create tasks on Day 8.)</p>
+        <div className="empty-state">
+          <p>No tasks yet — head to the Tasks page to add your first one.</p>
+        </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div>
           {tasks.map((task) => (
-            <div key={task._id} className="card" style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <div key={task._id} className={`card task-card${isOverdue(task) ? ' overdue' : ''}`}>
               <div>
-                <strong>{task.title}</strong>
-                <div style={{ fontSize: 13, color: 'var(--color-muted)' }}>
+                <span className="task-title">{task.title}</span>
+                {isOverdue(task) && <span className="badge badge-overdue">Overdue</span>}
+                <div className="task-meta">
                   {task.category} • {task.priority} • Due {new Date(task.deadline).toLocaleDateString()}
                 </div>
               </div>
-              <span>{task.status}</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-muted)' }}>{task.status}</span>
             </div>
           ))}
         </div>

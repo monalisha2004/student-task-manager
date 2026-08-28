@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/useAuth';
+
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -26,28 +27,30 @@ export default function Login() {
   };
 
   return (
-    <div style={{ maxWidth: 420, margin: '60px auto', padding: '0 20px' }}>
-      <div className="card">
-        <h2 style={{ marginTop: 0 }}>Welcome back</h2>
-        {error && <p style={{ color: 'var(--color-danger)' }}>{error}</p>}
+    <div className="auth-wrap">
+      <div className="card" style={{ width: '100%', maxWidth: 420 }}>
+        <h1 className="auth-title">Welcome back</h1>
+        <p className="auth-subtitle">Log in to see your tasks and deadlines.</p>
+
+        {error && <div className="alert alert-error">{error}</div>}
+
         <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: 14 }}>
-            <label>Email</label><br />
-            <input name="email" type="email" value={form.email} onChange={handleChange}
-              style={{ width: '100%', padding: 10, marginTop: 4 }} />
+          <div className="form-group">
+            <label className="form-label">Email</label>
+            <input className="form-input" name="email" type="email" value={form.email} onChange={handleChange} />
           </div>
-          <div style={{ marginBottom: 20 }}>
-            <label>Password</label><br />
-            <input name="password" type="password" value={form.password} onChange={handleChange}
-              style={{ width: '100%', padding: 10, marginTop: 4 }} />
+          <div className="form-group">
+            <label className="form-label">Password</label>
+            <input className="form-input" name="password" type="password" value={form.password} onChange={handleChange} />
           </div>
-          <button type="submit" className="btn btn-primary" style={{ width: '100%' }} disabled={submitting}>
+          <button type="submit" className="btn btn-primary btn-block" disabled={submitting}>
             {submitting ? 'Logging in…' : 'Log in'}
           </button>
         </form>
-        <p style={{ textAlign: 'center', marginTop: 16 }}>
-          Don't have an account? <Link to="/register">Sign up</Link>
-        </p>
+
+        <div className="auth-switch">
+          Don't have an account? <Link to="/register" style={{ color: 'var(--color-primary)', fontWeight: 600 }}>Sign up</Link>
+        </div>
       </div>
     </div>
   );
