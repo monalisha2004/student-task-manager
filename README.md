@@ -3,7 +3,7 @@
 A full stack MERN application where students can register, log in, and manage academic
 tasks by category, priority, deadline, and completion status.
 
-Built as a 10-day individual Full Stack Minor Project — Quillance Infotech, August 2026.
+Built as a 10-day individual Full Stack Minor Project August 2026.
 
 ## 🔗 Live Links
 
